@@ -44,28 +44,29 @@ class PixabayPlugin_Plugin implements Typecho_Plugin_Interface
     {
     }
 
-    public static function header()
-    {
-        $options = Helper::options()->plugin('PixabayPlugin');
-        $apiKey = $options->apiKey;
-        $quantity = $options->quantity;
-        $resolution = $options->resolution;
-        $keywords = $options->keywords;
+public static function header()
+{
+    $options = Helper::options()->plugin('PixabayPlugin');
+    $apiKey = $options->apiKey;
+    $quantity = $options->quantity;
+    $resolution = $options->resolution;
+    $keywords = $options->keywords;
 
-        // 使用以上配置调用Pixabay API来获取图片
-        $url = "https://pixabay.com/api/?key=$apiKey&q=$keywords&per_page=$quantity";
-        $response = file_get_contents($url);
-        $data = json_decode($response, true);
+    // 使用以上配置调用Pixabay API来获取图片
+    $url = "https://pixabay.com/api/?key=$apiKey&q=$keywords&per_page=$quantity&page=" . rand(1, 100);
+    $response = file_get_contents($url);
+    $data = json_decode($response, true);
 
-        // 渲染输出图片
-        if (isset($data['hits'])) {
-            foreach ($data['hits'] as $image) {
-                echo '<img src="' . $image['webformatURL'] . '" alt="' . $image['tags'] . '">';
-            }
-        } else {
-            echo 'Failed to fetch images from Pixabay.';
+    // 渲染输出图片
+    if (isset($data['hits'])) {
+        foreach ($data['hits'] as $image) {
+            echo '<img src="' . $image['webformatURL'] . '" alt="' . $image['tags'] . '">';
         }
+    } else {
+        echo 'Failed to fetch images from Pixabay.';
     }
+}
+
 
     public static function render()
     {
